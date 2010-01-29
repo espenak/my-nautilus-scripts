@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+
+from os import path, environ, system
+import subprocess
+from shared import *
+
+
+dirname = get_dirname()
+if not path.isdir(dirname):
+	error("Not a directory: " + dirname)
+
+if find_repo(dirname):
+	error("The is already a git-repository in a parent-directory.")
+
+#p = subprocess.Popen(["git", "init"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#stdout, stderr = p.communicate()
+#out_init = stdout + "\n" + stderr
+#if p.returncode != 0:
+#	error(out_init)
+
+try:
+	cmd_failerror("git init")
+	readme = "README.txt"
+	open(readme, "w").write("Git repository\n.")
+	cmd_failerror("git add " + readme)
+	cmd_failerror('git commit -a -m "Created repository"')
+	info("Repository created in %s." % dirname)
+except SystemExit, e:
+	system("rm -rf .git README.txt")
